@@ -36,7 +36,7 @@ function Careers() {
      <p className="text-lg my-2">Salary:20000-30000/month</p>
       <p className="text-lg my-2">Qualification</p>
        <p className="text-lg my-2">Experience : 1-2 yr</p>
-        <p className="text-lg my-2">Description</p>
+        <p className="text-lg my-2">Description : Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod asperiores incidunt iste praesentium autem. Perspiciatis eius temporibus vitae, provident aspernatur esse neque, rerum corrupti earum assumenda placeat, doloribus reiciendis iste.</p>
        
 </div>
       </div>

@@ -117,8 +117,8 @@ function Profile() {
                 <p className="text-justify">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro perspiciatis nisi explicabo maiores repudiandae itaque autem? Iure ullam enim, ut repellat ipsum necessitatibus placeat quaerat voluptate vel ipsa quasi laborum!
                 Aliquam reprehenderit veritatis placeat ex? Repudiandae, quasi. Perspiciatis, minima. Voluptatem architecto maiores deleniti est esse praesentium minima totam atque provident assumenda.</p>
                 <div className="flex py-4">
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJTCQowQB00nhcnOmLh-UUFuPQMNI6SwVKAw&s" alt="pending icon" width={'150px'} height={'150px'}/>
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCwPzwjd7slg0dR4uJ7YjQx2sYncuHgFevng&s" alt="approved icon" width={'150px'} height={'150px'}/>
+                  <img src="https://cdn-icons-png.flaticon.com/128/11093/11093794.png" alt="pending icon" width={'150px'} height={'150px'}/>
+                  <img src="https://cdn-icons-png.flaticon.com/512/7211/7211183.png" alt="approved icon" width={'150px'} height={'150px'}/>
                 </div>
               </div>
               <div className="px-4 mt-4 md:mt-0">
@@ -151,17 +151,13 @@ function Profile() {
                 <p className="text-justify">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro perspiciatis nisi explicabo maiores repudiandae itaque autem? Iure ullam enim, ut repellat ipsum necessitatibus placeat quaerat voluptate vel ipsa quasi laborum!
                 Aliquam reprehenderit veritatis placeat ex? Repudiandae, quasi. Perspiciatis, minima. Voluptatem architecto maiores deleniti est esse praesentium minima totam atque provident assumenda.</p>
                 <div className="flex py-4">
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJTCQowQB00nhcnOmLh-UUFuPQMNI6SwVKAw&s" alt="pending icon" width={'150px'} height={'150px'} style={{borderRadius:'50%'}}/>
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCwPzwjd7slg0dR4uJ7YjQx2sYncuHgFevng&s" alt="approved icon" width={'150px'} height={'150px'}/>
+                  <img src="https://cdn-icons-png.flaticon.com/512/6188/6188726.png" alt="pending icon" width={'150px'} height={'150px'} />
+                  
                 </div>
               </div>
-              <div className="px-4 mt-4 md:mt-0">
+             <div className="px-4 mt-4 md:mt-0">
                 <img src="/public/book.jpg" alt="book" className='w-full'/>
-              <div className="mt-4 float-end">
-                <button className='py-2 px-3 rounded bg-red-600 text-white'>
-                Delete
-              </button>
-              </div>
+              
               </div>
             </div>
         </div>
