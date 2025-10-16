@@ -11,7 +11,7 @@ function Contact() {
     <div className='text-center'>
       <Header/>
      <div className="md:px-40 px-5">
-       <h1 className="text-3xl py-5">Contacts</h1>
+       <h1 className="text-3xl py-5 font-bold">Contacts</h1>
        <p className='text-justify'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem cupiditate doloribus, ratione maiores sit in nemo deleniti quod, delectus, odio quam iste voluptatibus harum repellat tempore deserunt! Nulla, labore temporibus?</p>
        <div className="md:flex justify-evenly items-center py-5">
           <p><button className="bg-gray-200 rounded-full p-1 me-1">

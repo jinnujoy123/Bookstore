@@ -7,12 +7,13 @@ import Footer from '../../components/Footer'
 
 function Careers() {
   const [modalStatus,setModalStatus]=useState(false)
+  
   return (
     <div>
       <Header/>
       <div className="md:px-40 p-5">
         <div className="text-center">
-          <h1 className="text-3xl py-5 font-bold">Contacts</h1>
+          <h1 className="text-3xl py-5 font-bold">Careers</h1>
                  <p className='px-20 '>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem cupiditate doloribus, ratione maiores sit in nemo deleniti quod, delectus, odio quam iste voluptatibus harum repellat tempore deserunt! Nulla, labore temporibus?</p>
         </div>
        <h1 className='text-start font-bold text-2xl py-3'>Current Openings</h1>
