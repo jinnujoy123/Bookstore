@@ -1,12 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { getHomeBooksAPI } from '../../services/allAPI'
 
 
 function Home() {
+  const [homeBooks,setHomeBooks]=useState([])
+
+  useEffect(()=>{
+      getHomeBooks()
+  },[])
+
+  console.log(homeBooks);
+  
+  const getHomeBooks=async()=>{
+    try{
+        const result=await getHomeBooksAPI()
+        if(result.status==200){
+          setHomeBooks(result.data)
+        }
+    }catch(err){
+      console.log(err);
+      
+    }
+  }
   return (
     <div>
       <Header/>
@@ -28,39 +48,22 @@ function Home() {
       <h1 className='text-2xl font-bold pt-8'>NEW ARRIVALS</h1>
       <h1 className="text-3xl whitespace-nowrap py-4">Explore Our Latest Collections</h1>
       <div className="md:grid grid-cols-4 w-full mt-5">
-
-        <div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="https://images.unsplash.com/photo-1641154748135-8032a61a3f80?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="book" />
+{
+homeBooks.length>0 ?
+homeBooks?.map((book,index)=>(
+ <div key={index} className="p-3 shadow rounded mx-4">
+          <img src={book?.imageUrl}  alt={book?.title}  className="w-full h-72 object-cover rounded"
+/>
           <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<p>$ 30</p>
+<p className="text-blue-700 font-bold text-lg py-3">{book?.author}</p>
+<p>{book?.title}</p>
+<p className='text-red-600 py-2'>$ {book?.discountPrice}</p>
           </div>
         </div>
-<div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="/public/book.jpg" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<p>$ 30</p>
-          </div>
-        </div>
-        <div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="https://images.unsplash.com/photo-1641154748135-8032a61a3f80?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<p>$ 30</p>
-          </div>
-        </div>
-        <div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="/public/book.jpg" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<p>$ 30</p>
-          </div>
-        </div>
+))
+ :
+<p>Loading...</p>       
+}
       </div>
       <div className="">
         <Link to={'all-books'} className='bg-blue-600 p-3 text-white font-bold my-4 inline-block rounded'>Explore More...</Link>
