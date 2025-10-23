@@ -1,19 +1,77 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { Link} from 'react-router-dom'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { getAllBooksAPI } from '../../services/allAPI'
+import { toast, ToastContainer } from 'react-toastify'
+import { searchBookContext } from '../../contextAPI/ContextShare'
 function AllBooks() {
   const [listStatus,setListStatus]= useState(false)
+   const [token,SetToken] =useState("")
+   const [books,setBooks]=useState([])
+   const [tempBooks,setTempBooks]=useState([])
+   const [allCategories,setAllCategories]=useState([])
+   const {searchKey,setSearchKey}=useContext(searchBookContext)
+
+  useEffect(()=>{
+     if(sessionStorage.getItem("token")){
+      const userToken=sessionStorage.getItem("token")
+    SetToken(userToken)
+    getAllBooks(userToken)
+   }
+  },[searchKey])
+
+const getAllBooks=async (userToken)=>{
+  console.log(userToken)
+  const reqHeader={
+    "Authorization":`Bearer ${userToken}`
+  }
+  try{
+    const result=await getAllBooksAPI(searchKey,reqHeader)
+    if(result.status==200){
+      setBooks(result.data)
+      setTempBooks(result.data)
+      const tempCategory=result.data.map(item=>item.category)
+      const tempArray=[...new Set(tempCategory)]
+      setAllCategories(tempArray)
+    }else{
+      // console.log(result);
+      toast(result.response.data)
+      
+    }
+    // console.log(books);
+    
+  }catch(err){
+      console.log(err);
+      
+  }
+}
+
+// filtering according to book category
+const filterBooks=(category)=>{
+  if(category=='No-filter'){
+    setBooks(tempBooks)
+
+  }else{
+    setBooks(tempBooks?.filter(item=>item.category.toLowerCase()==category.toLowerCase()))
+    console.log(category);
+    
+    console.log(tempBooks);
+    
+  }
+}
+
   return (
     <>
      <Header/>
+    {token ?
      <>
      <div className="flex justify-center items-center flex-col my-5">
 <h1 className='text-3xl font-bold'>Collections</h1>
 <div className="flex my-5">
-  <input type="text" className='p-2 shadow placeholder-gray-700' placeholder='Search by Title'/>
+  <input type="text" className='p-2 shadow placeholder-gray-700' placeholder='Search by Title' onChange={e=>setSearchKey(e.target.value)} value={searchKey}/>
   <button className='bg-blue-900 text-white px-2'>Search</button>
 </div>
      </div>
@@ -27,86 +85,122 @@ function AllBooks() {
     </div>
     <div className={listStatus?"block":'md:block hidden'}>
 
-    <div className="">
+      <div className="">
+{
+  allCategories?.length>0 &&
+  allCategories.map((category,index)=>(
+   <div key={index} className="mt-3">
+      <input type="radio" id={category} name='filter' onClick={()=>filterBooks(category)}/>
+      <label className='ms-3' htmlFor={category}>{category}</label>
+      </div>
+  ))
+  
+}
+<div className="mt-3">
+      <input type="radio" id='no-filter' name='filter' onClick={()=>filterBooks('No-filter')}/>
+      <label className='ms-3' htmlFor='no-filter'>No-filter</label>
+      </div>
+  </div>
+
+    {/* <div className="">
       <div className="mt-3">
-      <input type="radio" id='Literary Fiction' name='filter'/>
-      <label className='ms-3' htmlFor="Literary Fiction">Literary Fiction</label>
+      <input type="radio" id='Fiction' name='filter' onClick={()=>filterBooks("Fiction")}/>
+      <label className='ms-3' htmlFor="Fiction">Fiction</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Philosophy' name='filter'/>
-      <label className='ms-3' htmlFor="Philosophy">Philosophy</label>
+      <input type="radio" id='Psychology' name='filter' onClick={()=>filterBooks("Psychology")}/>
+      <label className='ms-3' htmlFor="Psychology">Psychology</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Romance' name='filter'/>
+      <input type="radio" id='Romance' name='filter' onClick={()=>filterBooks("Romance")}/>
       <label className='ms-3' htmlFor="Romance">Romance</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Mystery/Thriller' name='filter'/>
-      <label className='ms-3' htmlFor="Mystery/Thriller">Mystery/Thriller</label>
+      <input type="radio" id='Thriller' name='filter' onClick={()=>filterBooks("Thriller")}/>
+      <label className='ms-3' htmlFor="Thriller">Thriller</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Politics' name='filter'/>
-      <label className='ms-3' htmlFor="Politics">Politics</label>
+      <input type="radio" id='Fantasy' name='filter' onClick={()=>filterBooks("Fantasy")}/>
+      <label className='ms-3' htmlFor="Fantasy">Fantasy</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Self-help' name='filter'/>
+      <input type="radio" id='Self-help' name='filter' onClick={()=>filterBooks("Self-help")}/>
       <label className='ms-3' htmlFor="Self-help">Self-help</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Auto=biography' name='filter'/>
+      <input type="radio" id='Auto=biography' name='filter' onClick={()=>filterBooks("Auto-biography")}/>
       <label className='ms-3' htmlFor="Auto-biography">Auto-biography</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='Horror' name='filter'/>
+      <input type="radio" id='Horror' name='filter' onClick={()=>filterBooks("Horror")}/>
       <label className='ms-3' htmlFor="Horror">Horror</label>
       </div>
       <div className="mt-3">
-      <input type="radio" id='No-filter' name='filter'/>
+      <input type="radio" id='No-filter' name='filter' onClick={()=>filterBooks("No-filter")}/>
       <label className='ms-3' htmlFor="No-filter">No-filter</label>
       </div>
-    </div>
+    </div> */}
     </div>
    
   </div>
   <div className="col-span-3">
      <div className="md:grid grid-cols-4  mt-5">
-        <div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="https://images.unsplash.com/photo-1641154748135-8032a61a3f80?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<Link to={'/book/1/view'} className='bg-blue-800 text-white rounded px-2' >View Book</Link>
-          </div>
-        </div>
-<div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="https://images.unsplash.com/photo-1641154748135-8032a61a3f80?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<Link to={'/book/id/view'} className='bg-blue-800 text-white rounded px-2' >View Book</Link>
-          </div>
-        </div>
-        <div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="https://images.unsplash.com/photo-1641154748135-8032a61a3f80?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<Link to={'/book/id/view'} className='bg-blue-800 text-white rounded px-2' >View Book</Link>
-          </div>
-        </div>
-        <div className="p-3 shadow rounded mx-4">
-          <img width={'100%'} height={'300px'} src="https://images.unsplash.com/photo-1641154748135-8032a61a3f80?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="book" />
-          <div className="flex flex-col justify-center items-center">
-<p className="text-blue-700 font-bold text-lg">Author</p>
-<p>Book Title</p>
-<Link to={'/book/id/view'} className='bg-blue-800 text-white rounded px-2' >View Book</Link>
-          </div>
-        </div>
+       {
+        books.length>0 ?
+        books?.map(book=>(
+
+<div 
+  key={book?._id} 
+  className="flex flex-col justify-between p-3 shadow rounded m-4 h-90"  
+>
+  <img 
+    src={book.imageUrl} 
+    alt="book" 
+    className="h-40 w-full object-contain rounded"  
+  />
+
+  <div className="flex flex-col items-center text-center ">
+    <p className="text-blue-700 font-semibold text-lg py-2">
+      {book?.title.slice(0, 20)}
+    </p>
+    <p className="text-gray-700">{book?.author.slice(0, 20)}</p>
+  </div>
+
+ 
+  <Link 
+    to={`/books/${book?._id}/view`} 
+    className="bg-blue-800 text-white rounded p-2 mt-auto text-center"
+  >
+    View Book
+  </Link>
+</div>
+
+        ))
+        :
+        <p>no books</p>
+       }
+      
       </div>
   </div>
 </div>
      </>
+     :
+     <p>No books</p>
+  }
      <Footer/>
+      <ToastContainer
+     position="top-right"
+     autoClose={3000}
+     hideProgressBar={false}
+     newestOnTop={false}
+     closeOnClick={false}
+     rtl={false}
+     pauseOnFocusLoss
+     draggable
+     pauseOnHover
+     theme="colored"
+     
+     />
     </>
   )
 }

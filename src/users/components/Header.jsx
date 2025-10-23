@@ -46,7 +46,7 @@ function Header() {
 </div>
 
 {/* login */}
-<div className="md:flex  items-center justify-end hidden ">
+<div className="md:flex  items-center justify-end hidden text-xl">
         <FontAwesomeIcon icon={faInstagram} />
         <FontAwesomeIcon icon={faFacebook} />
         <FontAwesomeIcon icon={faXTwitter} />
@@ -83,7 +83,18 @@ function Header() {
            <Link  to={'/login'}> <button  className='border border-black px-3 ms-3 rounded hover:text-white hover:bg-black'><FontAwesomeIcon icon={faUser} />Login</button></Link>
            :
            <div className="">
-            <button><img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":"" } alt="user" /></button>
+            <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full  px-3 py-2  shadow-xs hover:bg-gray-50">
+                <img width={'40px'} height={'40px'} className='mx-2' style={{borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: "https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png"} alt="" /></button>
+           
+              {
+                dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black/5 focus:outline:hidden">
+                <div className="py-1">
+                  <Link to={'/profile'} className='block px-4 py-2 text-sm text-gray-700'><p><FontAwesomeIcon icon={faAddressCard} className='me-2'/>Profile</p>
+                  </Link>
+                  <button onClick={logout} className='block px-4 py-2 text-sm text-gray-700 '><FontAwesomeIcon icon={faPowerOff} className='me-2'/>Logout</button>
+                </div>
+              </div>
+              }
            </div>
         }
 

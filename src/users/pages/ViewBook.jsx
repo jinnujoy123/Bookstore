@@ -1,13 +1,49 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { faBackward, faCamera, faEye, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
+import { getSingleBookAPI } from '../../services/allAPI'
+import SERVERURL from '../../services/serverURL'
 
 
 function ViewBook() {
   const [modalStatus,setModalStatus]=useState(false)
+  const [book,setBook]=useState({})
+  const {id} = useParams()
+
+  useEffect(()=>{
+      viewBookDetails()
+  },[])
+
+
+  
+
+const viewBookDetails = async ()=>{
+  const token = sessionStorage.getItem("token")
+  if(token){
+    const reqHeader={
+      "Authorization":`Bearer ${token}`
+    }
+    try{
+        const result=await getSingleBookAPI(id,reqHeader)
+        if(result.status==200){
+          setBook(result.data)
+          console.log(result.data);
+          
+        }else if(result.response.status==401){
+          toast.warning(result.response.data)
+        }
+    }catch(err){
+      console.log(err);
+      
+    }
+  }
+}
+console.log(book);
+
   return (
     <div>
       <Header></Header>
@@ -15,29 +51,29 @@ function ViewBook() {
         <div className="border p-5 shadow border-gray-200">
           <div className="md:grid grid-cols-4 gap-x-10">
               <div className="col-span-1">
-                <img className='w-full' src="/public/book.jpg" alt="" />
+                <img className='w-full' src={book.imageUrl} alt="" />
               </div>
               <div className="col-span-3">
                 <div className="flex justify-between my-5">
-                  <h1 className='text-xl font-bold'>Title</h1>
+                  <h1 className='text-xl font-bold'>{book.title}</h1>
                   <button onClick={()=>setModalStatus(!modalStatus)} className='text-gray-400'><FontAwesomeIcon icon={faEye} /></button>
                   </div>
-                  <p className='my-3 text-blue-700'>- Author</p>
+                  <p className='my-3 text-blue-700'>- {book.author}</p>
                   <div className="md:grid grid-cols-3 gap-5 my-10">
-                      <p className='font-bold'>Publisher : demo</p>
-                       <p className='font-bold'>Language : demo</p>
-                        <p className='font-bold'>No. of pages : demo</p>
-                         <p className='font-bold'>Seller Mail : demo</p>
-                          <p className='font-bold'>Real Price : demo</p>
-                           <p className='font-bold'>ISBN : demo</p>
+                      <p className='font-bold'>Publisher : {book.publisher}</p>
+                       <p className='font-bold'>Language : {book.language}</p>
+                       <p className='font-bold'>Category : {book.category}</p>
+                        <p className='font-bold'>No. of pages : {book.noOfPages}</p>
+                         <p className='font-bold'>Seller Mail : {book.userMail}</p>
+                          <p className='font-bold'>Real Price : {book.price}</p>
+                           <p className='font-bold'>ISBN : {book.isbn}</p>
                 </div>
-                <p className="font-bold text-lg">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque officia aspernatur cupiditate neque nostrum modi aliquam molestias aperiam placeat eum. Sunt, sed? Quo aliquid aspernatur, voluptatum adipisci est ipsa labore.
-                Tenetur sapiente nesciunt nemo</p>
+                <p className="font-lightbold text-lg">{book.abstract}..</p>
               </div>
           </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end my-5">
                 <Link to={'/all-books'} className='bg-blue-900 text-white p-2 rounded'><FontAwesomeIcon icon={faBackward} />Back</Link>
-                <Link className='bg-blue-900 ms-5 text-white p-2 rounded'>Buy $ 123</Link>
+                <Link className='bg-blue-900 ms-5 text-white p-2 rounded '>Buy at $ {book.discountPrice}</Link>
               </div>
         </div>
       </div>
@@ -61,9 +97,15 @@ function ViewBook() {
 
 <div className="md:flex flex-wrap my-4 justify-center">
   {/* duplicate images */}
-  <img src="https://img.freepik.com/free-photo/close-up-woman-holding-book-hand_23-2147909853.jpg" alt="" width={'250px'} height={'250px'} className='mx-2 my-3'/>
-   <img src="https://images.pexels.com/photos/19355480/pexels-photo-19355480/free-photo-of-rustic-books-and-autumn-leaf-composition.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" width={'250px'} height={'250px'} className='mx-2 my-3'/>
-    <img src="https://images.pexels.com/photos/17750871/pexels-photo-17750871/free-photo-of-hand-touching-a-book.jpeg" alt="" width={'250px'} height={'250px'} className='mx-2 my-3'/>
+ {
+  book?.uploadImg?.length>0?
+  book?.uploadImg?.map(img=>(
+     <img src={`${SERVERURL}/uploads/${img}`} alt="book images" width={'250px'} height={'250px'} className='mx-2 my-3' />
+  ))
+  :
+  <p>User uploaded book images are unavailable</p>
+ }
+   
 </div>
 </div>
           </div>
@@ -71,6 +113,19 @@ function ViewBook() {
       </div>
 }
       <Footer></Footer>
+      <ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="colored"
+
+/>
     </div>
   )
 }

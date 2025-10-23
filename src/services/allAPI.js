@@ -29,7 +29,16 @@ export const getHomeBooksAPI =async()=>{
 // authorised API - user
 
 // view all books
+export const getAllBooksAPI =async(search,reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/all-books?search=${search}`,{},reqHeader)
+}
+
 // view single books
+export const getSingleBookAPI =async(bookId,reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/books/${bookId}/view`,{},reqHeader)
+}
+
+
 // upload book -called by profile component
 
 export const addBookAPI=async(reqBody,reqHeader)=>{

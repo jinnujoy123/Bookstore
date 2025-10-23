@@ -31,7 +31,7 @@ useEffect(()=>{
      <Route path='/login' element={<Auth/>}/>
      <Route path='/register' element={<Auth register/>}/>
      <Route path='/all-books' element={<AllBooks/>}/>
-     <Route path='/book/:id/view' element={<ViewBook/>}/>
+     <Route path='/books/:id/view' element={<ViewBook/>}/>
       <Route path='/profile' element={<Profile/>}/>
        <Route path='/careers' element={<Careers/>}/>
         <Route path='/contact' element={<Contact/>}/>

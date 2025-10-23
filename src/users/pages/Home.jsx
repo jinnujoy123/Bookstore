@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { getHomeBooksAPI } from '../../services/allAPI'
+import { toast, ToastContainer } from 'react-toastify'
+import { searchBookContext } from '../../contextAPI/ContextShare'
 
 
 function Home() {
   const [homeBooks,setHomeBooks]=useState([])
-
+ const navigate=useNavigate()
+const {searchKey,setSearchKey}=useContext(searchBookContext)
   useEffect(()=>{
+    setSearchKey("")
       getHomeBooks()
   },[])
 
@@ -27,6 +31,23 @@ function Home() {
       
     }
   }
+
+  const searchBook=()=>{
+      if(!searchKey){
+      toast.warning("Please provide a Book Title here!!!")
+      }else if(!sessionStorage.getItem("token")){
+        toast.warning("Please Login to search books!!!")
+        setTimeout(()=>{
+            navigate('/login')
+        },2000)
+      }else if(sessionStorage.getItem("token")&& searchKey){
+        navigate("/all-books")
+      }else{
+        toast.error("Something went wrong")
+      }
+  }
+
+
   return (
     <div>
       <Header/>
@@ -37,8 +58,8 @@ function Home() {
         <h1 className="text-5xl font-bold ">Wonderful Gifts</h1>
         <p>Give your family and friends a book</p>
         <div className="mt-9">
-          <input type="text" placeholder='Search Books' className='bg-white rounded-3xl py-2 ps-4 placeholder-gray-700 w-90' />
-           <FontAwesomeIcon icon={faMagnifyingGlass} style={{marginLeft:'-40px',color:'gray'}}/>
+          <input onChange={e=>setSearchKey(e.target.value)} type="text" placeholder='Search Books' className='bg-white rounded-3xl py-2 ps-4 placeholder-gray-700 w-90 text-black' />
+           <FontAwesomeIcon icon={faMagnifyingGlass} style={{marginLeft:'-40px',color:'gray'}} onClick={searchBook}/>
         </div>
       </div>
   
@@ -95,6 +116,19 @@ homeBooks?.map((book,index)=>(
 <p className='pt-3 pb-8'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut, neque? Asperiores perspiciatis velit nulla fuga molestias tempora ipsam itaque veniam eum nesciunt facere voluptatem quo officiis similique quos, qui deleniti.</p>
     </section>
       <Footer/>
+      <ToastContainer
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="colored"
+
+/>
     </div>
   )
 }
