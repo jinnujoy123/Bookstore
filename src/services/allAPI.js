@@ -44,12 +44,29 @@ export const getSingleBookAPI =async(bookId,reqHeader)=>{
 export const addBookAPI=async(reqBody,reqHeader)=>{
     return await commonAPI("POST",`${SERVERURL}/add-book`,reqBody,reqHeader)
 }
+
+// all user upload books - called by profile
+export const getAllUserBooksAPI =async(reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/user-books`,{},reqHeader)
+}
+
 // profile update
-// purchased book
+// purchased book - called by profile
+export const getAllUserPurchasedBooksAPI =async(reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/user-bought-books`,{},reqHeader)
+}
+
+// remoe user  uploaded books - called by profile
+export const removeUserUploadBookAPI =async(bookId,reqHeader)=>{
+    return await commonAPI("DELETE",`${SERVERURL}/user-books/${bookId}/remove`,{},reqHeader)
+}
+
+// user profile update
+export const updateUserProfileAPI =async(reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${SERVERURL}/user-profile/edit`,reqBody,reqHeader)
+}
+
 // view selled book
-// approve books
-
-
 
 
 // authorised API- admin
@@ -57,5 +74,15 @@ export const addBookAPI=async(reqBody,reqHeader)=>{
 // add career
 // update admin
 // list books
+export const listbooksAPI=async (reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/admin-all-books`,{},reqHeader)
+}
 // list users
-// approve books
+export const getAllUsersAPI = async (reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/all-users`,{},reqHeader)
+}
+
+// approve books-called by admin-resource when approve button clicked
+export const updateBookStatusAPI = async(reqBody,reqHeader)=>{
+    return await commonAPI("PUT",`${SERVERURL}/admin/book/approve`,reqBody,reqHeader)
+}

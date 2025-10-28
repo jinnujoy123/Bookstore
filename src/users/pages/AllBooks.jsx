@@ -102,44 +102,7 @@ const filterBooks=(category)=>{
       </div>
   </div>
 
-    {/* <div className="">
-      <div className="mt-3">
-      <input type="radio" id='Fiction' name='filter' onClick={()=>filterBooks("Fiction")}/>
-      <label className='ms-3' htmlFor="Fiction">Fiction</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Psychology' name='filter' onClick={()=>filterBooks("Psychology")}/>
-      <label className='ms-3' htmlFor="Psychology">Psychology</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Romance' name='filter' onClick={()=>filterBooks("Romance")}/>
-      <label className='ms-3' htmlFor="Romance">Romance</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Thriller' name='filter' onClick={()=>filterBooks("Thriller")}/>
-      <label className='ms-3' htmlFor="Thriller">Thriller</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Fantasy' name='filter' onClick={()=>filterBooks("Fantasy")}/>
-      <label className='ms-3' htmlFor="Fantasy">Fantasy</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Self-help' name='filter' onClick={()=>filterBooks("Self-help")}/>
-      <label className='ms-3' htmlFor="Self-help">Self-help</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Auto=biography' name='filter' onClick={()=>filterBooks("Auto-biography")}/>
-      <label className='ms-3' htmlFor="Auto-biography">Auto-biography</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='Horror' name='filter' onClick={()=>filterBooks("Horror")}/>
-      <label className='ms-3' htmlFor="Horror">Horror</label>
-      </div>
-      <div className="mt-3">
-      <input type="radio" id='No-filter' name='filter' onClick={()=>filterBooks("No-filter")}/>
-      <label className='ms-3' htmlFor="No-filter">No-filter</label>
-      </div>
-    </div> */}
+    
     </div>
    
   </div>
@@ -151,7 +114,7 @@ const filterBooks=(category)=>{
 
 <div 
   key={book?._id} 
-  className="flex flex-col justify-between p-3 shadow rounded m-4 h-90"  
+  className="flex flex-col justify-between p-3 shadow rounded m-4 h-90" hidden={book?.status=='pending' || book?.status=='sold'} 
 >
   <img 
     src={book.imageUrl} 

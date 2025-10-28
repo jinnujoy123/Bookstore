@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { faSquarePlus } from '@fortawesome/free-regular-svg-icons'
 import { toast, ToastContainer } from 'react-toastify'
-import { addBookAPI } from '../../services/allAPI'
+import { addBookAPI, getAllUserBooksAPI, getAllUserPurchasedBooksAPI, removeUserUploadBookAPI } from '../../services/allAPI'
+import Edit from '../components/Edit'
+import SERVERURL from '../../services/serverURL'
+import { userUpdateContext } from '../../contextAPI/ContextShare'
 
 function Profile() {
   const [sellBookStatus,setSellBookStatus]=useState(true)
@@ -14,19 +17,96 @@ function Profile() {
     const [bookDetails,setBookDetails]=useState({
       title:"",author:"",noOfPages:"",imageUrl:"",price:"",discountPrice:"",abstract:"",publisher:"",language:"",isbn:"",category:"",uploadImages:[]
     })
-
-
+    
+    
     // console.log(bookDetails);
-const [preview,setPreview]=useState("")
-const [previewList,setPreviewList]=useState([])
-const [token,setToken]=useState("")
+    const [preview,setPreview]=useState("")
+    const [previewList,setPreviewList]=useState([])
+    const [token,setToken]=useState("")
+     const [userDp,setUserDp]=useState("")
+    const [userBooks,setUserBooks]=useState([])
+    const [username,setUsername]=useState([])
+    const [deleteBookStatus,setDeleteBookStatus]=useState(false)
+    const [purchaseBooks,setPurchaseBooks]=useState(false)
+    const {userEditResponse}=useContext(userUpdateContext)
+console.log(userBooks);
 
 useEffect(()=>{
 if (sessionStorage.getItem("token")){
   setToken(sessionStorage.getItem("token"))
-}
-},[])
+  const user=JSON.parse(sessionStorage.getItem("user"))
+  setUsername(user.username)
+  setUserDp(user.profile) 
 
+}
+},[userEditResponse])
+
+useEffect(()=>{
+  if (bookStatus==true){
+    getAllUserBooks()
+  }else if (purchaseStatus==true){
+    getAllUserBoughtBooks
+  }
+},[bookStatus,deleteBookStatus,purchaseBooks])
+
+
+
+const getAllUserBooks=async()=>{
+   const reqHeader={
+          "Authorization":`Bearer ${token}`
+        }
+        try{
+          const result=await getAllUserBooksAPI(reqHeader)
+          console.log(result);
+          
+          if(result.status==200){
+            setUserBooks(result.data)
+          }else{
+            console.log(result);
+            
+          }
+        }catch(err){
+          console.log(err);
+          
+        }
+}
+const removeBook=async(bookId)=>{
+  const reqHeader={
+    "Authorization":`Bearer ${token}`
+  }
+  try{
+    const result=await removeUserUploadBookAPI(bookId,reqHeader)                 
+    if(result.status==200){
+      toast.success(result.data)
+      setDeleteBookStatus(true)
+          }else{
+            console.log(result);
+            
+          }
+        }catch(err){
+          console.log(err);
+          
+        }
+}
+const getAllUserBoughtBooks=async()=>{
+   const reqHeader={
+          "Authorization":`Bearer ${token}`
+        }
+        try{
+          const result=await getAllUserPurchasedBooksAPI(reqHeader)
+          console.log(result);
+          
+          if(result.status==200){
+            setPurchaseBooks(result.data)
+          }else{
+            console.log(result);
+            
+          }
+        }catch(err){
+          console.log(err);
+          
+        }
+}
 const handleReset=()=>{
   setBookDetails({
       title:"",author:"",noOfPages:"",imageUrl:"",price:"",discountPrice:"",abstract:"",publisher:"",language:"",isbn:"",category:"",uploadImages:[]
@@ -100,16 +180,16 @@ setPreviewList([])
       <Header/>
       <div className="bg-black" style={{height:'150px'}}>
     <div className="bg-white p-3 " style={{height:'230px',width:'230px',borderRadius:'50%',marginLeft:'70px'}}>
-    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="profile"  style={{height:'200px',width:'200px',borderRadius:'50%'}}/>
+   <img  className='' style={{borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: `${SERVERURL}/uploads/${userDp}`} alt="" />
     </div>
       </div>
 
     <div className="md:flex justify-between px-20 mt-25">
       <div className="flex  items-center">
-     <h1 className='font-bold text-2xl md:text-3xl'>Username</h1>
+     <h1 className='font-bold text-2xl md:text-3xl'>{username}</h1>
        <FontAwesomeIcon icon={faCircleCheck} style={{color:'blue'}}/>
       </div>
-      <div className="">Edit</div>
+      <div className=""><Edit/></div>
     </div>
      
       <p className="md:px-20 px-5 my-5 text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil laboriosam provident cum rerum eum odio praesentium ipsum tempore sit iste. Et dicta ad reprehenderit saepe id nam cupiditate non odio.
@@ -213,30 +293,45 @@ setPreviewList([])
       
       <div className="p-10 my-20 shadow rounded">
         {/* duplicate div according to book */}
-        <div className="p-5 rounded mt-4 bg-gray-100">
+        {
+          userBooks?.length>0 ?
+          userBooks.map((item,index)=>(
+              <div key={index} className="p-5 rounded mt-4 bg-gray-100">
             <div className="md:grid grid-cols-[3fr_1fr]">
               <div className="px-4">
-                <h1 className='text-2xl'>Book Title</h1>
-                <h2 className='text-xl'>Author</h2>
+                <h1 className='text-2xl'>{item?.title}</h1>
+                <h2 className='text-xl'>{item?.author}</h2>
                 <h3 className='text-lg text-blue-500'
-                >$ 300</h3>
-                <p className="text-justify">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro perspiciatis nisi explicabo maiores repudiandae itaque autem? Iure ullam enim, ut repellat ipsum necessitatibus placeat quaerat voluptate vel ipsa quasi laborum!
-                Aliquam reprehenderit veritatis placeat ex? Repudiandae, quasi. Perspiciatis, minima. Voluptatem architecto maiores deleniti est esse praesentium minima totam atque provident assumenda.</p>
+                >$ {item?.discountPrice}</h3>
+                <p className="text-justify">{item?.abstract}</p>
                 <div className="flex py-4">
-                  <img src="https://cdn-icons-png.flaticon.com/128/11093/11093794.png" alt="pending icon" width={'150px'} height={'150px'}/>
-                  <img src="https://cdn-icons-png.flaticon.com/512/7211/7211183.png" alt="approved icon" width={'150px'} height={'150px'}/>
+                  {
+                    item?.status=="pending" ? 
+                    <img src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending icon" width={'130px'} height={'130px'}/>
+                    : item?.status=="approved"?
+                  <img src="https://pngimg.com/uploads/approved/approved_PNG1.png" alt="approved icon" width={'80px'} height={'80px'}/>
+                  :
+                  <img src="https://psdstamps.com/wp-content/uploads/2020/02/round-rejected-stamp-png.png" alt="rejected icon" width={'130px'} height={'130px'}/>
+                  }
                 </div>
               </div>
               <div className="px-4 mt-4 md:mt-0">
-                <img src="/public/book.jpg" alt="book" className='w-full'/>
+                <img src={item?.imageUrl} alt="book" className='w-full'/>
               <div className="mt-4 float-end">
-                <button className='py-2 px-3 rounded bg-red-600 text-white'>
+                <button onClick={()=>removeBook(item?._id)} className='py-2 px-3 rounded bg-red-600 text-white'>
                 Delete
               </button>
               </div>
               </div>
             </div>
         </div>
+          ))
+          :
+          <div className="text-red-600 text-2xl flex justify-center text-center items-center flex-col">
+            <img src="https://media.tenor.com/3n-ASJF-Y9YAAAAi/reading-read.gif" alt="no-book" width={'45%'} height={'100px'}/>
+            <p className='py-4'>No books uploaded!!!</p>
+            </div>
+        }
       </div>
       
       }
@@ -247,17 +342,19 @@ setPreviewList([])
         
       <div className="p-10 my-20 shadow rounded">
         {/* duplicate div according to book */}
-        <div className="p-5 rounded mt-4 bg-gray-100">
+        {
+       purchaseBooks?.length>0 ?
+       purchaseBooks?.map((item,index)=>(
+         <div key={index} className="p-5 rounded mt-4 bg-gray-100">
             <div className="md:grid grid-cols-[3fr_1fr]">
               <div className="px-4">
-                <h1 className='text-2xl'>Book Title</h1>
-                <h2 className='text-xl'>Author</h2>
+                <h1 className='text-2xl'>{item?.title}</h1>
+                <h2 className='text-xl'>{item?.author}</h2>
                 <h3 className='text-lg text-blue-500'
-                >$ 300</h3>
-                <p className="text-justify">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro perspiciatis nisi explicabo maiores repudiandae itaque autem? Iure ullam enim, ut repellat ipsum necessitatibus placeat quaerat voluptate vel ipsa quasi laborum!
-                Aliquam reprehenderit veritatis placeat ex? Repudiandae, quasi. Perspiciatis, minima. Voluptatem architecto maiores deleniti est esse praesentium minima totam atque provident assumenda.</p>
+                >$ {item?.discountPrice}</h3>
+                <p className="text-justify">{item?.abstract}</p>
                 <div className="flex py-4">
-                  <img src="https://cdn-icons-png.flaticon.com/512/6188/6188726.png" alt="pending icon" width={'150px'} height={'150px'} />
+                  <img src={item?.imgUrl} alt="pending icon" width={'150px'} height={'150px'} />
                   
                 </div>
               </div>
@@ -267,6 +364,13 @@ setPreviewList([])
               </div>
             </div>
         </div>
+       ))
+       :
+        <div className="text-red-600 text-2xl flex justify-center text-center items-center flex-col">
+            <img src="https://media.tenor.com/3n-ASJF-Y9YAAAAi/reading-read.gif" alt="no-book" width={'45%'} height={'100px'}/>
+            <p className='py-4'>No books are purchased yet!!!</p>
+            </div>
+}
       </div>
       
       }

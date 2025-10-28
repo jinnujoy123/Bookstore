@@ -2,9 +2,11 @@ import { faFacebook, faInstagram, faXTwitter } from '@fortawesome/free-brands-sv
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons'
 import { faBars, faPowerOff, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Link, useNavigate } from 'react-router-dom'
+import SERVERURL from '../../services/serverURL'
+import { userUpdateContext } from '../../contextAPI/ContextShare'
 
 
 function Header() {
@@ -12,6 +14,7 @@ function Header() {
   const [token,SetToken] =useState("")
   const [userDp,setUserDp]=useState("")
   const [dropDownStatus,setDropDownStatus]=useState(false)
+   const {userEditResponse}=useContext(userUpdateContext)
   const navigate=useNavigate()
 
   useEffect(()=>{
@@ -20,10 +23,12 @@ function Header() {
       SetToken(token)
       const user=JSON.parse(sessionStorage.getItem("user"))
       setUserDp(user.profile) 
+      // console.log(user.profile);
       
            
     }
-  },[token])
+  },[token,userEditResponse])
+console.log(userDp);
 
   const logout=()=>{
     sessionStorage.clear()
@@ -58,7 +63,7 @@ function Header() {
            <div className="relative inline-block text-left">
            
               <button onClick={()=>setDropDownStatus(!dropDownStatus)} className="w-full bg-white px-3 py-2  shadow-xs hover:bg-gray-50">
-                <img width={'40px'} height={'40px'} className='mx-2' style={{borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: "https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png"} alt="" /></button>
+                <img width={'40px'} height={'40px'} className='mx-2' style={{borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: `${SERVERURL}/uploads/${userDp}`} alt="" /></button>
            
               {
                 dropDownStatus && <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black/5 focus:outline:hidden">
