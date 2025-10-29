@@ -1,16 +1,34 @@
 import { faBook, faGear, faGraduationCap, faHome, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { adminUpdateContext } from '../../contextAPI/ContextShare'
+import SERVERURL from '../../services/serverURL'
 
 function AdminSidebar() {
+    const {adminEditResponse}=useContext(adminUpdateContext)
+     const [userDp,setUserDp]=useState("")
+     const [adminName,setAdminName]=useState("")
+
+      useEffect(()=>{
+         if(sessionStorage.getItem("token")){
+          
+           const user=JSON.parse(sessionStorage.getItem("user"))
+           setUserDp(user.profile)
+           setAdminName(user.username)         
+           }
+        },[adminEditResponse])
+        // console.log(adminName);
+       
+
+
   return (
     <div className='bg-blue-100 text-dark py-30 flex flex-col justify-center items-center'>
-      <div className="text-center">
-        <img src='https://img.freepik.com/premium-vector/person-with-blue-shirt-that-says-name-person_1029948-7040.jpg' style={{width:'100px',height:'100px',borderRadius:'50%'}} alt='admin profile' />
-         
+      <div className="text-center flex flex-col justify-center items-center ">
+        {/* <img src='https://img.freepik.com/premium-vector/person-with-blue-shirt-that-says-name-person_1029948-7040.jpg' style={{width:'100px',height:'100px',borderRadius:'50%'}} alt='admin profile' /> */}
+         <img className='mx-2' style={{width:'100px',height:'100px',borderRadius:'50%'}} src={userDp==""?'https://img.freepik.com/premium-vector/person-with-blue-shirt-that-says-name-person_1029948-7040.jpg' :userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: `${SERVERURL}/uploads/${userDp}`} alt="" /> 
       
-          <p className='text-xl py-4'>Admin Name</p>
+          <p className='text-xl py-4'>{adminName}</p>
       </div>
         <div className="flex flex-col px-5 ">
           <div className=" mt-3">

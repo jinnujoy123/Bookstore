@@ -35,7 +35,7 @@ function AdminCareers() {
        <input type="text" placeholder='Search by Job Title' className='placeholder-gray-200 w-75 p-2 shadow'/>
             <button  className='bg-green-900 text-white p-2'><Link>Search</Link></button>
      </div>
-      <button  className='bg-blue-900 text-white p-2'><Link>Add</Link></button>
+      <button  className='bg-blue-900 text-white py-2 px-5'>Add</button>
   </div>
   <div className="border border-gray-200 shadow p-5 my-5">
       <div className="flex mb-5">

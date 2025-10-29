@@ -179,8 +179,8 @@ setPreviewList([])
     <div>
       <Header/>
       <div className="bg-black" style={{height:'150px'}}>
-    <div className="bg-white p-3 " style={{height:'230px',width:'230px',borderRadius:'50%',marginLeft:'70px'}}>
-   <img  className='' style={{borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: `${SERVERURL}/uploads/${userDp}`} alt="" />
+    <div className="bg-white " style={{height:'230px',width:'230px',borderRadius:'50%',marginLeft:'70px'}}>
+   <img  className='' style={{width:'230px',height:'230px',borderRadius:'50%'}} src={userDp==""?"https://www.pngall.com/wp-content/uploads/17/User-Icon-Circle-Identity-Icon-PNG-thumb.png":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp: `${SERVERURL}/uploads/${userDp}`} alt="" />
     </div>
       </div>
 

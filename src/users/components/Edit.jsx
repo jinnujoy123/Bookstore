@@ -58,7 +58,7 @@ function Edit() {
                         sessionStorage.setItem("user",JSON.stringify(result.data))
                         handleReset()
                         setOffCanvasStatus(false)
-                        setUserEditResponse(userUpdateContext)
+                        setUserEditResponse(result.data)
                     }else{
                         toast.error("Something went wrong")
                         console.log(result);
@@ -71,6 +71,7 @@ function Edit() {
                         sessionStorage.setItem("user",JSON.stringify(result.data))
                         handleReset()
                         setOffCanvasStatus(false)
+                        setUserEditResponse(result.data)
                     }else{
                         toast.error("Something went wrong")
                         console.log(result);
@@ -107,21 +108,19 @@ function Edit() {
                     :
                     <img className='z-52' src={preview?preview:`${SERVERURL}/uploads/${existingProfile}`} alt="profile"  style={{width:'100px',height:'100px',borderRadius:'50%'}}/>
                     }
-                    <button className='bg-yellow-300 z-53 fixed text-white py-3 px-4 rounded' style={{marginTop:'-20px',marginLeft:'75px'}}>
-                        <FontAwesomeIcon icon={faPen} />
-                    </button>
+                      <FontAwesomeIcon icon={faPen} style={{marginLeft:'70px',marginTop:'-110px'}} className="bg-yellow-400 p-1"/> 
                     </label>
                     <div className="mt-10 mb-3 w-full px-5">
                         <input type="text" value={userDetails.username} onChange={e=>setUserDetails({...userDetails,username:e.target.value})} placeholder='Username' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
                     </div>
                     <div className=" mb-3 w-full px-5">
-                        <input type="text" value={userDetails.password} onChange={e=>setUserDetails({...userDetails,password:e.target.value})}placeholder='Password' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
+                        <input type="text" value={userDetails.password} onChange={e=>setUserDetails({...userDetails,password:e.target.value})} placeholder='Password' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
                     </div>
                     <div className=" mb-3 w-full px-5">
-                        <input type="text" value={userDetails.cpassword} onChange={e=>setUserDetails({...userDetails,cpassword:e.target.value})}placeholder='Confirm Password' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
+                        <input type="text" value={userDetails.cpassword} onChange={e=>setUserDetails({...userDetails,cpassword:e.target.value})} placeholder='Confirm Password' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
                     </div>
                     <div className=" mb-3 w-full px-5">
-                        <input type="text" value={userDetails.bio} onChange={e=>setUserDetails({...userDetails,bio:e.target.value})}placeholder='Bio' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
+                        <input type="text" value={userDetails.bio} onChange={e=>setUserDetails({...userDetails,bio:e.target.value})} placeholder='Bio' className='w-full border border-gray-300 placeholder-gray-200 p-2 rounded'/>
                     </div>
                     <div className="flex justify-end w-full px-5 mt-7">
                         <button onClick={handleReset} className='bg-amber-600 text-white rounded border py-3 px-4 hover:text-amber-600 hover:border-amber-600 hover:bg-white '>Reset</button>
