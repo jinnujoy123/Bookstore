@@ -1,14 +1,59 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import AdminSidebar from '../components/AdminSidebar'
 import Footer from '../../components/Footer'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot, faTrash } from '@fortawesome/free-solid-svg-icons'
+import AddJob from '../components/AddJob'
+import { getAllJobsAPI, removeJobAPI } from '../../services/allAPI'
+import { ToastContainer } from 'react-toastify'
+import { jobContext } from '../../contextAPI/ContextShare'
 
 function AdminCareers() {
   const [joblistStatus,setJoblistStatus]=useState(true)
   const [listApplicationStatus,setListApllicationStatus]=useState(false)
+ const [allJobs,setAllJobs]=useState([])
+ const [searchKey,setSearchKey]=useState("")
+ const [deleteJobResponse,setDeleteResponse]=useState(false)
+ const {addJobResponse,setAddJobResponse}=useContext(jobContext)
+
+ console.log(allJobs);
+ useEffect(()=>{
+if(joblistStatus==true){
+  getAllJobs()
+}
+ },[searchKey,deleteJobResponse,addJobResponse])
+
+const getAllJobs=async()=>{
+       try{
+const result=await getAllJobsAPI(searchKey)
+if(result.status==200){  
+  setAllJobs(result.data)
+}
+    }catch(err){
+    console.log(err);        
+    }
+  }
+const removeJob =async(id)=>{
+  const token=(sessionStorage.getItem("token"))
+  if(token){
+    const reqHeader={
+      "Authorization": `Bearer ${token}`
+    }
+    try{
+      const result=await removeJobAPI(id,reqHeader)
+      if(result.status==200){
+        console.log(result);        
+        setAllJobs(result.data)
+        getAllJobs()
+        }
+    }catch(err){
+      console.log(err);
+      
+    }
+  }
+}
   return (
    <div>
      <AdminHeader/>
@@ -32,29 +77,38 @@ function AdminCareers() {
 <div className="">
   <div className="flex my-5 justify-between items-center">
      <div className="">
-       <input type="text" placeholder='Search by Job Title' className='placeholder-gray-200 w-75 p-2 shadow'/>
-            <button  className='bg-green-900 text-white p-2'><Link>Search</Link></button>
+       <input onChange={e=>setSearchKey(e.target.value)} type="text" placeholder='Search by Job Title' className='placeholder-gray-200 w-75 p-2 shadow'/>
+            <button  className='bg-green-900 text-white p-2'>Search</button>
      </div>
-      <button  className='bg-blue-900 text-white py-2 px-5'>Add</button>
+      <AddJob/>
   </div>
-  <div className="border border-gray-200 shadow p-5 my-5">
+  
+  {
+    allJobs?.length>0 ?
+    allJobs?.map(job=>(
+<div key={job._id} className="border border-gray-200 shadow p-5 my-5">
       <div className="flex mb-5">
         <div className="w-full">
-          <h1 className='text-xl font-bold'>Hr Assistant</h1>
+          <h1 className='text-xl font-bold'>{job.title}</h1>
           <hr />
         </div>
-        <button className='bg-red-700 text-white p-2 w-25'>
+        <button onClick={()=>removeJob(job._id)} className='bg-red-700 text-white p-2 w-25'>
            Delete<FontAwesomeIcon icon={faTrash} />
         </button>
       </div>
       <p className="text-lg text-blue-900 my-2"><FontAwesomeIcon icon={faLocationDot} />Kochi</p>
-       <p className="text-lg my-2">Job Type : full-time</p>
-       <p className="text-lg my-2">Salary:20000-30000/month</p>
-        <p className="text-lg my-2">Qualification</p>
-         <p className="text-lg my-2">Experience : 1-2 yr</p>
-          <p className="text-lg my-2">Description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem nobis voluptate vero blanditiis quaerat? Illo repellendus nostrum ullam, sapiente praesentium error nemo velit explicabo, blanditiis assumenda natus eaque tenetur illum!</p>
+       <p className="text-lg my-2">Job Type : {job.jobType}</p>
+       <p className="text-lg my-2">Salary: {job.salary}</p>
+        <p className="text-lg my-2">Qualification : {job.qualification}</p>
+         <p className="text-lg my-2">Experience : {job.experience}</p>
+          <p className="text-lg my-2 text-justify">Description: {job.description}</p>
   
   </div>
+    )):
+    <div className="">
+      <p>No job openings</p>
+    </div>
+  }
 </div>
 
    }
@@ -95,6 +149,7 @@ function AdminCareers() {
      </div>
      </div>
      <Footer/>
+   
     </div>
   )
 }

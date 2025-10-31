@@ -23,10 +23,12 @@ return await commonAPI("POST",`${SERVERURL}/google-login`,reqBody)
 export const getHomeBooksAPI =async()=>{
     return await commonAPI("GET",`${SERVERURL}/home-books`)
 }
-// all careers
 
-
-// authorised API - user
+//all careers
+export const getAllJobsAPI =async(searchKey)=>{
+    return await commonAPI("GET",`${SERVERURL}/all-jobs?search=${searchKey}`)
+}
+// =================authorised API - user===============================
 
 // view all books
 export const getAllBooksAPI =async(search,reqHeader)=>{
@@ -56,7 +58,7 @@ export const getAllUserPurchasedBooksAPI =async(reqHeader)=>{
     return await commonAPI("GET",`${SERVERURL}/user-bought-books`,{},reqHeader)
 }
 
-// remoe user  uploaded books - called by profile
+// remove user  uploaded books - called by profile
 export const removeUserUploadBookAPI =async(bookId,reqHeader)=>{
     return await commonAPI("DELETE",`${SERVERURL}/user-books/${bookId}/remove`,{},reqHeader)
 }
@@ -91,4 +93,14 @@ export const updateBookStatusAPI = async(reqBody,reqHeader)=>{
 // user profile update
 export const updateAdminProfileAPI =async(reqBody,reqHeader)=>{
     return await commonAPI("PUT",`${SERVERURL}/admin-profile/edit`,reqBody,reqHeader)
+}
+
+// add jobs
+export const addJobAPI=async(reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${SERVERURL}/admin/add-job`,reqBody,reqHeader)
+}
+
+// remove job
+export const removeJobAPI =async(jobId,reqHeader)=>{
+    return await commonAPI("DELETE",`${SERVERURL}/job/${jobId}/remove`,{},reqHeader)
 }

@@ -150,7 +150,7 @@ setPreviewList([])
             })
            }
           }
-        console.log(reqBody);
+        // console.log(reqBody);
         try{
           const result=await addBookAPI(reqBody,reqHeader)
           console.log(result);

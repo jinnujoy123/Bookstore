@@ -1,12 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { Link } from 'react-router-dom'
 import { faArrowUpRightFromSquare, faLocationDot, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from '../../components/Footer'
+import { getAllJobsAPI } from '../../services/allAPI'
 
 function Careers() {
   const [modalStatus,setModalStatus]=useState(false)
+
+   const [allJobs,setAllJobs]=useState([])
+   const [searchKey,setSearchKey]=useState("")
+  
+  
+   console.log(allJobs);
+   useEffect(()=>{
+    getAllJobs()
+    },[searchKey])
+  
+  const getAllJobs=async()=>{
+         try{
+  const result=await getAllJobsAPI(searchKey)
+  if(result.status==200){  
+    setAllJobs(result.data)
+  }
+      }catch(err){
+      console.log(err);        
+      }
+    }
   
   return (
     <div>
@@ -18,28 +39,38 @@ function Careers() {
         </div>
        <h1 className='text-start font-bold text-2xl py-3'>Current Openings</h1>
        <div className="flex justify-center items-center">
-        <input type="text" placeholder='Job Title' className='placeholder-gray-300 p-2 shadow'/>
-        <button  className='bg-green-900 text-white p-2'><Link>Search</Link></button>
+        <input onChange={e=>setSearchKey(e.target.value)}  type="text" placeholder='Job Title' className='placeholder-gray-300 p-2 shadow'/>
+        <button  className='bg-green-900 text-white p-2'>Search</button>
        </div>
        {/* duplicate */}
-<div className="border border-gray-200 shadow p-5 my-5">
-    <div className="flex mb-5">
-      <div className="w-full">
-        <h1 className='text-xl'>Hr Assistant</h1>
-        <hr />
-      </div>
-      <button onClick={()=>setModalStatus(true)} className='bg-blue-900 text-white p-2 w-25'>
+
+        {
+           allJobs?.length>0 ?
+           allJobs?.map(job=>(
+       <div key={job._id} className="border border-gray-200 shadow p-5 my-5">
+             <div className="flex mb-5">
+               <div className="w-full">
+                 <h1 className='text-xl font-bold'>{job.title}</h1>
+                 <hr />
+               </div>
+              <button onClick={()=>setModalStatus(true)} className='bg-blue-900 text-white p-2 w-25'>
          Apply<FontAwesomeIcon icon={faArrowUpRightFromSquare} />
       </button>
-    </div>
-    <p className="text-lg my-2"><FontAwesomeIcon icon={faLocationDot} />Kochi</p>
-     <p className="text-lg my-2">Job Type : full-time</p> 
-     <p className="text-lg my-2">Salary:20000-30000/month</p>
-      <p className="text-lg my-2">Qualification</p>
-       <p className="text-lg my-2">Experience : 1-2 yr</p>
-        <p className="text-lg my-2">Description : Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod asperiores incidunt iste praesentium autem. Perspiciatis eius temporibus vitae, provident aspernatur esse neque, rerum corrupti earum assumenda placeat, doloribus reiciendis iste.</p>
-       
-</div>
+             </div>
+             <p className="text-lg text-blue-900 my-2"><FontAwesomeIcon icon={faLocationDot} />Kochi</p>
+              <p className="text-lg my-2">Job Type : {job.jobType}</p>
+              <p className="text-lg my-2">Salary: {job.salary}</p>
+               <p className="text-lg my-2">Qualification : {job.qualification}</p>
+                <p className="text-lg my-2">Experience : {job.experience}</p>
+                 <p className="text-lg my-2 text-justify">Description: {job.description}</p>
+         
+         </div>
+           )):
+           <div className="py-10 text-red-700 text-center">
+             <p>No job openings1!!!</p>
+           </div>
+         }
+
       </div>
             {/* modal */}
       {
