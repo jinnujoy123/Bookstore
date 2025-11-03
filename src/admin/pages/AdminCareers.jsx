@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot, faTrash } from '@fortawesome/free-solid-svg-icons'
 import AddJob from '../components/AddJob'
-import { getAllJobsAPI, removeJobAPI } from '../../services/allAPI'
+import { getAllApplicationsAPI, getAllJobsAPI, removeJobAPI } from '../../services/allAPI'
 import { ToastContainer } from 'react-toastify'
 import { jobContext } from '../../contextAPI/ContextShare'
+import SERVERURL from '../../services/serverURL'
 
 function AdminCareers() {
   const [joblistStatus,setJoblistStatus]=useState(true)
@@ -17,16 +18,31 @@ function AdminCareers() {
  const [searchKey,setSearchKey]=useState("")
  const [deleteJobResponse,setDeleteResponse]=useState(false)
  const {addJobResponse,setAddJobResponse}=useContext(jobContext)
+ const [applications,setApplications]=useState([])
 
- console.log(allJobs);
+ console.log(applications);
  useEffect(()=>{
 if(joblistStatus==true){
   getAllJobs()
+}else if(listApplicationStatus==true){
+  getApplications()
 }
- },[searchKey,deleteJobResponse,addJobResponse])
+ },[searchKey,deleteJobResponse,addJobResponse,listApplicationStatus])
 
+ const getApplications = async()=>{
+   const token=(sessionStorage.getItem("token"))
+  if(token){
+    const reqHeader={
+      "Authorization": `Bearer ${token}`
+    }
+    const result=await getAllApplicationsAPI(reqHeader)
+    if(result.status==200){
+      setApplications(result.data)
+    }
+ }
+ }
 const getAllJobs=async()=>{
-       try{
+try{
 const result=await getAllJobsAPI(searchKey)
 if(result.status==200){  
   setAllJobs(result.data)
@@ -129,18 +145,29 @@ const removeJob =async(id)=>{
     </tr>
   </thead>
   <tbody>
-    <tr>
+   {
+    applications?.length>0?
+    applications?.map((item,index)=>(
+<tr key={item?._id}>
+  
     <td className="border border-gray-500 text-center p-3">
-      1
+     {index+1}
     </td>
-    <td className="border border-gray-500 text-center p-3">Front End Deeloper</td>
-    <td className="border border-gray-500 text-center p-3">Max Miller</td>
-    <td className="border border-gray-500 text-center p-3">BCA</td>
-    <td className="border border-gray-500 text-center p-3">max@gmail.com</td>
-    <td className="border border-gray-500 text-center p-3">9456789090</td>
-    <td className="border border-gray-500 text-center p-3 text-justify">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis pariatur voluptatem </td>
-    <td className="border border-gray-500 text-center p-3"><Link className='text-blue-600 underline'>Resume</Link></td>
-    </tr>
+    <td className="border border-gray-500 text-center p-3">{item?.jobTitle}</td>
+    <td className="border border-gray-500 text-center p-3">{item?.fullname}</td>
+    <td className="border border-gray-500 text-center p-3">{item?.qualification}</td>
+    <td className="border border-gray-500 text-center p-3">{item?.email}</td>
+    <td className="border border-gray-500 text-center p-3">{item?.phone}</td>
+    <td className="border border-gray-500 text-center p-3 text-justify">{item?.coverLetter}</td>
+    <td className="border border-gray-500 text-center p-3"><Link className='text-blue-600 underline'to={`${SERVERURL}/pdf/${item?.resume}`} target='_blank' >Resume</Link></td>
+   
+
+</tr>
+  )):
+    <div className="">
+      <p>No Applications are available!!!</p>
+    </div>
+   }
   </tbody>
 </table>
     </div>

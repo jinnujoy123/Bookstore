@@ -28,6 +28,7 @@ export const getHomeBooksAPI =async()=>{
 export const getAllJobsAPI =async(searchKey)=>{
     return await commonAPI("GET",`${SERVERURL}/all-jobs?search=${searchKey}`)
 }
+
 // =================authorised API - user===============================
 
 // view all books
@@ -56,6 +57,11 @@ export const getAllUserBooksAPI =async(reqHeader)=>{
 // purchased book - called by profile
 export const getAllUserPurchasedBooksAPI =async(reqHeader)=>{
     return await commonAPI("GET",`${SERVERURL}/user-bought-books`,{},reqHeader)
+}
+// apply for job -called by user career component
+
+export const addApplicationAPI=async(reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${SERVERURL}/application/add`,reqBody,reqHeader)
 }
 
 // remove user  uploaded books - called by profile
@@ -104,3 +110,9 @@ export const addJobAPI=async(reqBody,reqHeader)=>{
 export const removeJobAPI =async(jobId,reqHeader)=>{
     return await commonAPI("DELETE",`${SERVERURL}/job/${jobId}/remove`,{},reqHeader)
 }
+
+// list application
+export const getAllApplicationsAPI = async (reqHeader)=>{
+    return await commonAPI("GET",`${SERVERURL}/all-applications`,{},reqHeader)
+}
+
